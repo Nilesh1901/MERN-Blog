@@ -18,6 +18,16 @@ app.use(express.json());
 app.use("/api/user", userRoute);
 app.use("/api/auth", authRoute);
 
+// middleware to handel error
+app.use((err, req, res, next) => {
+  const { statusCode = 500, message = "Internal server error" } = err;
+  res.status(statusCode).json({
+    success: false,
+    statusCode,
+    message,
+  }); 
+});
+
 app.listen(process.env.PORT || 8080, () => {
   console.log(`Server is running on port ${process.env.PORT}`);
 });
