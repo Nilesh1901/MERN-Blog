@@ -37,7 +37,7 @@ export const updateUser = wrapAsync(async (req, res, next) => {
       );
     }
   }
-  const updateUser = await User.findByIdAndUpdate(
+  const userUpdate = await User.findByIdAndUpdate(
     req.params.id,
     {
       $set: {
@@ -49,6 +49,14 @@ export const updateUser = wrapAsync(async (req, res, next) => {
     },
     { new: true }
   );
-  const { password, ...rest } = updateUser._doc;
+  const { password, ...rest } = userUpdate._doc;
   res.status(200).json(rest);
+});
+
+export const deleteUser = wrapAsync(async (req, res, next) => {
+  if (req.user.userId !== req.params.id) {
+    return next(new ExpressError(403, "you are not allowed to delete this user "));
+  } 
+  await User.findByIdAndDelete(req.params.id)
+  res.status(200).json('User deleted successfully')
 });
