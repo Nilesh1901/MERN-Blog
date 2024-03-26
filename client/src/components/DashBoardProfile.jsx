@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { Alert, Button, TextInput } from "flowbite-react";
+import { Alert, Button, Modal, TextInput } from "flowbite-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   getDownloadURL,
@@ -13,10 +13,14 @@ import {
   updateStart,
   updateSuccess,
   updateFailure,
+  deleteStart,
+  deleteSuccess,
+  deleteFailure,
 } from "../app/user/userSlice";
+import { IoWarningOutline } from "react-icons/io5";
 
 function DashBoardProfile() {
-  const { currentUser } = useSelector((store) => store.user);
+  const { currentUser, errorMessage } = useSelector((store) => store.user);
   const [fileImage, setFileImage] = useState(null);
   const [fileImageUrl, setFileImageUrl] = useState(null);
   const [uploadfileImageProgress, setUploadfileImageProgress] = useState(null);
@@ -25,6 +29,7 @@ function DashBoardProfile() {
   const [fileImageUploading, setFileImageUploading] = useState(null);
   const [updateUserSuccess, setUpdateUserSuccess] = useState(null);
   const [updateUserError, setUpdateUserError] = useState(null);
+  const [showModal, setshowModal] = useState(false);
   const filePickerRef = useRef();
   const dispatch = useDispatch();
 
@@ -125,6 +130,24 @@ function DashBoardProfile() {
     }
   };
 
+  const handelUserDelete = async () => {
+    setshowModal(false);
+    try {
+      dispatch(deleteStart());
+      const response = await fetch(`/api/user/delete/${currentUser._id}`, {
+        method: "DELETE",
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        dispatch(deleteFailure(data.message));
+        return;
+      } else {
+        dispatch(deleteSuccess());
+      }
+    } catch (error) {
+      dispatch(deleteFailure(error.message));
+    }
+  };
   return (
     <div className=" max-w-lg mx-auto p-3 w-full">
       <h2 className=" text-center font-semibold text-3xl py-7">Profile</h2>
@@ -205,7 +228,9 @@ function DashBoardProfile() {
         </Button>
       </form>
       <div className=" text-red-500 flex justify-between mt-5">
-        <span className=" cursor-pointer">Delete Account</span>
+        <span onClick={() => setshowModal(true)} className=" cursor-pointer">
+          Delete Account
+        </span>
         <span className=" cursor-pointer">Sign Out</span>
       </div>
       {updateUserSuccess && (
@@ -213,11 +238,40 @@ function DashBoardProfile() {
           {updateUserSuccess}
         </Alert>
       )}
+      {errorMessage && (
+        <Alert className="mt-5" color="failure">
+          {errorMessage}
+        </Alert>
+      )}
       {updateUserError && (
         <Alert className="mt-5" color="failure">
           {updateUserError}
         </Alert>
       )}
+      <Modal
+        show={showModal}
+        onClose={() => setshowModal(false)}
+        popup
+        size="md"
+      >
+        <Modal.Header />
+        <Modal.Body>
+          <div>
+            <IoWarningOutline className="h-14 w-14 text-gray-400 mx-auto mb-5 dark:text-gray-200" />
+            <h3 className="text-center text-gray-500 dark:text-gray-400 mb-5">
+              Are you sure you want to delete your account
+            </h3>
+            <div className="flex justify-center gap-5">
+              <Button color="failure" onClick={handelUserDelete}>
+                Yes I'm sure
+              </Button>
+              <Button color="gray" onClick={() => setshowModal(false)}>
+                No cancel
+              </Button>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 }
