@@ -1,4 +1,4 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Alert, Button, TextInput } from "flowbite-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
@@ -9,6 +9,11 @@ import {
 } from "firebase/storage";
 import app, { auth } from "../config/firebase";
 import { CircularProgressbar } from "react-circular-progressbar";
+import {
+  updateStart,
+  updateSuccess,
+  updateFailure,
+} from "../app/user/userSlice";
 
 function DashBoardProfile() {
   const { currentUser } = useSelector((store) => store.user);
@@ -16,7 +21,12 @@ function DashBoardProfile() {
   const [fileImageUrl, setFileImageUrl] = useState(null);
   const [uploadfileImageProgress, setUploadfileImageProgress] = useState(null);
   const [fileImageUploadError, setFileImageUploadError] = useState(null);
+  const [formData, setFormData] = useState({});
+  const [fileImageUploading, setFileImageUploading] = useState(null);
+  const [updateUserSuccess, setUpdateUserSuccess] = useState(null);
+  const [updateUserError, setUpdateUserError] = useState(null);
   const filePickerRef = useRef();
+  const dispatch = useDispatch();
 
   const handelFileImageChange = (e) => {
     const file = e.target.files[0];
@@ -41,6 +51,7 @@ function DashBoardProfile() {
 
   const uploadImageFile = useCallback(async () => {
     setFileImageUploadError(null);
+    setFileImageUploading(true);
     const storage = getStorage(app);
     const fileName = new Date().getTime() + fileImage.name;
     const storageRef = ref(storage, fileName);
@@ -60,19 +71,64 @@ function DashBoardProfile() {
         setUploadfileImageProgress(null);
         setFileImage(null);
         setFileImageUrl(null);
+        setFileImageUploading(false);
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           setFileImageUrl(downloadURL);
+          setFileImageUploading(false);
+          setFormData((prevFormData) => {
+            return { ...prevFormData, profilePicture: downloadURL };
+          });
         });
       }
     );
   });
 
+  const handelChange = (e) => {
+    setFormData((prevFormData) => {
+      return { ...prevFormData, [e.target.id]: e.target.value };
+    });
+  };
+
+  const handelSubmit = async (e) => {
+    e.preventDefault();
+    setUpdateUserError(null);
+    setUpdateUserSuccess(null);
+    if (Object.keys(formData).length === 0) {
+      setUpdateUserError("No changes made");
+      return;
+    }
+    if (fileImageUploading) {
+      setUpdateUserError("please wait for image to upload");
+      return;
+    }
+    try {
+      dispatch(updateStart());
+      const response = await fetch(`/api/user/update/${currentUser._id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        dispatch(updateFailure(data.message));
+        setUpdateUserError(data.message);
+        return;
+      } else {
+        dispatch(updateSuccess(data));
+        setUpdateUserSuccess("User's profile updated Successfully");
+      }
+    } catch (error) {
+      dispatch(updateFailure(error.message));
+      setUpdateUserError(error.message);
+    }
+  };
+
   return (
     <div className=" max-w-lg mx-auto p-3 w-full">
       <h2 className=" text-center font-semibold text-3xl py-7">Profile</h2>
-      <form className="flex flex-col gap-5">
+      <form className="flex flex-col gap-5" onSubmit={handelSubmit}>
         <input
           type="file"
           accept="image/*"
@@ -129,14 +185,21 @@ function DashBoardProfile() {
           id="username"
           placeholder="username"
           defaultValue={currentUser.username}
+          onChange={handelChange}
         />
         <TextInput
           type="email"
           id="email"
           placeholder="email"
           defaultValue={currentUser.email}
+          onChange={handelChange}
         />
-        <TextInput type="password" id="password" placeholder="Password" />
+        <TextInput
+          type="password"
+          id="password"
+          placeholder="Password"
+          onChange={handelChange}
+        />
         <Button type="submit" gradientDuoTone="purpleToBlue" outline>
           Update
         </Button>
@@ -145,6 +208,16 @@ function DashBoardProfile() {
         <span className=" cursor-pointer">Delete Account</span>
         <span className=" cursor-pointer">Sign Out</span>
       </div>
+      {updateUserSuccess && (
+        <Alert className="mt-5" color="success">
+          {updateUserSuccess}
+        </Alert>
+      )}
+      {updateUserError && (
+        <Alert className="mt-5" color="failure">
+          {updateUserError}
+        </Alert>
+      )}
     </div>
   );
 }
