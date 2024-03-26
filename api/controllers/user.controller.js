@@ -55,8 +55,14 @@ export const updateUser = wrapAsync(async (req, res, next) => {
 
 export const deleteUser = wrapAsync(async (req, res, next) => {
   if (req.user.userId !== req.params.id) {
-    return next(new ExpressError(403, "you are not allowed to delete this user "));
-  } 
-  await User.findByIdAndDelete(req.params.id)
-  res.status(200).json('User deleted successfully')
+    return next(
+      new ExpressError(403, "you are not allowed to delete this user ")
+    );
+  }
+  await User.findByIdAndDelete(req.params.id);
+  res.status(200).json("User deleted successfully");
+});
+
+export const signOut = wrapAsync(async (req, res, next) => {
+  res.clearCookie("access_token").status(200).json("user has been signed out");
 });

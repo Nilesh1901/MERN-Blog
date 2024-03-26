@@ -16,6 +16,7 @@ import {
   deleteStart,
   deleteSuccess,
   deleteFailure,
+  signOutSuccess,
 } from "../app/user/userSlice";
 import { IoWarningOutline } from "react-icons/io5";
 
@@ -148,6 +149,21 @@ function DashBoardProfile() {
       dispatch(deleteFailure(error.message));
     }
   };
+  const handelsignOut = async () => {
+    try {
+      const response = await fetch("/api/user/signout", {
+        method: "POST",
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        console.log(data.message);
+      } else {
+        dispatch(signOutSuccess());
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
   return (
     <div className=" max-w-lg mx-auto p-3 w-full">
       <h2 className=" text-center font-semibold text-3xl py-7">Profile</h2>
@@ -231,7 +247,9 @@ function DashBoardProfile() {
         <span onClick={() => setshowModal(true)} className=" cursor-pointer">
           Delete Account
         </span>
-        <span className=" cursor-pointer">Sign Out</span>
+        <span onClick={handelsignOut} className=" cursor-pointer">
+          Sign Out
+        </span>
       </div>
       {updateUserSuccess && (
         <Alert className="mt-5" color="success">
