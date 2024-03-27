@@ -11,12 +11,15 @@ import {
 import app from "../config/firebase";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
+import { useNavigate } from "react-router-dom";
 
 function CreatePost() {
   const [file, setFile] = useState(null);
   const [imageUploadProgress, setImageUploadProgress] = useState(null);
   const [imageUploadError, setImageUploadError] = useState(false);
   const [formData, setFormData] = useState({});
+  const [publishError, setPublishError] = useState(null);
+  const navigate = useNavigate();
   const handleUploadImage = async () => {
     if (!file) {
       setImageUploadError("Please select an Image");
@@ -36,7 +39,9 @@ function CreatePost() {
           setImageUploadProgress(progress.toFixed(0));
         },
         (error) => {
-          setImageUploadError("Image upload failed");
+          setImageUploadError(
+            "Could not uplad image (File must be less than 2MB)"
+          );
           setImageUploadProgress(null);
         },
         () => {
@@ -56,10 +61,31 @@ function CreatePost() {
       setImageUploadProgress(null);
     }
   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch("/api/post/create", {
+        headers: { "Content-Type": "application/json" },
+        method: "POST",
+        body: JSON.stringify(formData),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        setPublishError(data.message);
+        return;
+      } else {
+        setPublishError(null);
+        navigate(`/post/${data.slug}`);
+      }
+    } catch (error) {
+      setPublishError("Something went wrong");
+    }
+  };
   return (
     <div className="flex p-3 min-w-3xl min-h-screen mx-auto flex-col">
       <h1 className="text-center text-3xl my-7 font-semibold">Create Post</h1>
-      <form action="" className="flex flex-col gap-4">
+      <form action="" className="flex flex-col gap-4" onSubmit={handleSubmit}>
         <div className="flex flex-col sm:flex-row gap-4 justify-between">
           <TextInput
             type="text"
@@ -67,8 +93,19 @@ function CreatePost() {
             required
             id="title"
             className="flex-1"
+            onChange={(e) =>
+              setFormData((prevFormData) => {
+                return { ...prevFormData, title: e.target.value };
+              })
+            }
           />
-          <Select>
+          <Select
+            onChange={(e) =>
+              setFormData((prevFormData) => {
+                return { ...prevFormData, category: e.target.value };
+              })
+            }
+          >
             <option value="uncategorized">Select a category</option>
             <option value="javascript">Javascript</option>
             <option value="reactjs">React.js</option>
@@ -112,12 +149,21 @@ function CreatePost() {
           theme="snow"
           placeholder="Write something..."
           className="h-72 mb-12"
-          required
+          onChange={(value) =>
+            setFormData((prevFormData) => {
+              return { ...prevFormData, content: value };
+            })
+          }
         />
         <Button type="submit" gradientDuoTone="purpleToPink">
           Publish
         </Button>
       </form>
+      {publishError && (
+        <Alert color="failure" className="mt-4">
+          {publishError}
+        </Alert>
+      )}
     </div>
   );
 }
