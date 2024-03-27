@@ -10,6 +10,7 @@ const verifyToken = (req, res, next) => {
     if (err) {
       return next(new ExpressError(401, "Unauthorized"));
     }
+
     req.user = user;
     next();
   });
