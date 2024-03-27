@@ -56,7 +56,10 @@ export const signIn = wrapAsync(async (req, res, next) => {
   }
 
   // assign token to the browser session
-  const token = jwt.sign({ userId: validUser._id }, process.env.JWT_SECRET);
+  const token = jwt.sign(
+    { userId: validUser._id, isAdmin: validUser.isAdmin },
+    process.env.JWT_SECRET
+  );
   const { password: pass, ...rest } = validUser._doc;
   res
     .status(200)
@@ -74,7 +77,10 @@ export const google = wrapAsync(async (req, res, next) => {
   // checking if the user is already existing in database
   if (user) {
     // assign token to the browser session
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
+    const token = jwt.sign(
+      { userId: user._id, isAdmin: user.isAdmin },
+      process.env.JWT_SECRET
+    );
     const { password, ...rest } = user._doc;
     res
       .status(200)
@@ -100,7 +106,10 @@ export const google = wrapAsync(async (req, res, next) => {
     await newUser.save();
 
     // assign token to the browser session
-    const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET);
+    const token = jwt.sign(
+      { userId: newUser._id, isAdmin: newUser.isAdmin },
+      process.env.JWT_SECRET
+    );
     const { password, ...rest } = newUser._doc;
     res
       .status(200)
