@@ -37,7 +37,7 @@ function DashBoardProfile() {
   const filePickerRef = useRef();
   const dispatch = useDispatch();
 
-  const handelFileImageChange = (e) => {
+  const handleFileImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       // Check if the selected file is an image
@@ -94,13 +94,13 @@ function DashBoardProfile() {
     );
   });
 
-  const handelChange = (e) => {
+  const handleChange = (e) => {
     setFormData((prevFormData) => {
       return { ...prevFormData, [e.target.id]: e.target.value };
     });
   };
 
-  const handelSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setUpdateUserError(null);
     setUpdateUserSuccess(null);
@@ -134,7 +134,7 @@ function DashBoardProfile() {
     }
   };
 
-  const handelUserDelete = async () => {
+  const handleUserDelete = async () => {
     setshowModal(false);
     try {
       dispatch(deleteStart());
@@ -152,7 +152,7 @@ function DashBoardProfile() {
       dispatch(deleteFailure(error.message));
     }
   };
-  const handelsignOut = async () => {
+  const handlesignOut = async () => {
     try {
       const response = await fetch("/api/user/signout", {
         method: "POST",
@@ -170,12 +170,12 @@ function DashBoardProfile() {
   return (
     <div className=" max-w-lg mx-auto p-3 w-full">
       <h2 className=" text-center font-semibold text-3xl py-7">Profile</h2>
-      <form className="flex flex-col gap-5" onSubmit={handelSubmit}>
+      <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
         <input
           type="file"
           accept="image/*"
           ref={filePickerRef}
-          onChange={handelFileImageChange}
+          onChange={handleFileImageChange}
           hidden
         />
         <div
@@ -227,20 +227,20 @@ function DashBoardProfile() {
           id="username"
           placeholder="username"
           defaultValue={currentUser.username}
-          onChange={handelChange}
+          onChange={handleChange}
         />
         <TextInput
           type="email"
           id="email"
           placeholder="email"
           defaultValue={currentUser.email}
-          onChange={handelChange}
+          onChange={handleChange}
         />
         <TextInput
           type="password"
           id="password"
           placeholder="Password"
-          onChange={handelChange}
+          onChange={handleChange}
         />
         <Button
           type="submit"
@@ -273,7 +273,7 @@ function DashBoardProfile() {
         <span onClick={() => setshowModal(true)} className=" cursor-pointer">
           Delete Account
         </span>
-        <span onClick={handelsignOut} className=" cursor-pointer">
+        <span onClick={handlesignOut} className=" cursor-pointer">
           Sign Out
         </span>
       </div>
@@ -306,7 +306,7 @@ function DashBoardProfile() {
               Are you sure you want to delete your account
             </h3>
             <div className="flex justify-center gap-5">
-              <Button color="failure" onClick={handelUserDelete}>
+              <Button color="failure" onClick={handleUserDelete}>
                 Yes I'm sure
               </Button>
               <Button color="gray" onClick={() => setshowModal(false)}>

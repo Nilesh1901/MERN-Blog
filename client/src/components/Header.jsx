@@ -20,7 +20,7 @@ function Header() {
   const dispatch = useDispatch();
   const path = useLocation().pathname;
 
-  const handelsignOut = async () => {
+  const handlesignOut = async () => {
     try {
       const response = await fetch("/api/user/signout", {
         method: "POST",
@@ -85,7 +85,7 @@ function Header() {
               <Dropdown.Item>Profile</Dropdown.Item>
             </Link>
             <Dropdown.Divider />
-            <Dropdown.Item onClick={handelsignOut}>Sign out</Dropdown.Item>
+            <Dropdown.Item onClick={handlesignOut}>Sign out</Dropdown.Item>
           </Dropdown>
         ) : (
           <Link to={"/sign-in"}>

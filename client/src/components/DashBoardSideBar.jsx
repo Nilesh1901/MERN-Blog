@@ -19,7 +19,7 @@ function DashBoardSideBar() {
     }),
     [location.search]
   );
-  const handelsignOut = async () => {
+  const handlesignOut = async () => {
     try {
       const response = await fetch("/api/user/signout", {
         method: "POST",
@@ -50,7 +50,7 @@ function DashBoardSideBar() {
             </Sidebar.Item>
           </Link>
           <Sidebar.Item
-            onClick={handelsignOut}
+            onClick={handlesignOut}
             icon={HiArrowSmRight}
             className="cursor-pointer"
           >

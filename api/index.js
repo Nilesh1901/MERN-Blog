@@ -15,12 +15,12 @@ mongoose
 const app = express();
 
 app.use(express.json());
-app.use(cookieParser())
+app.use(cookieParser());
 
 app.use("/api/user", userRoute);
 app.use("/api/auth", authRoute);
 
-// middleware to handel error
+// middleware to handle error
 app.use((err, req, res, next) => {
   const { statusCode = 500, message = "Internal server error" } = err;
   res.status(statusCode).json({
