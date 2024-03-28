@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 
 function DashBoardPost() {
   const [userPosts, setUserPosts] = useState([]);
+  const [showMore, setShowMore] = useState(true);
   const { currentUser } = useSelector((store) => store.user);
   useEffect(() => {
     const fetchUserPosts = async () => {
@@ -28,7 +29,24 @@ function DashBoardPost() {
       setUserPosts([]); // Reset user posts if not an admin
     }
   }, [currentUser._id]);
-  console.log(userPosts);
+
+  const handleShowMore = async () => {
+    const startIndex = userPosts.length;
+    try {
+      const response = await fetch(
+        `/api/post/getposts?userId=${currentUser?._id}&startIndex=${startIndex}`
+      );
+      const data = await response.json();
+      if (response.ok) {
+        setUserPosts((prevPosts) => [...prevPosts, ...data.posts]);
+        if (data.posts.length < 9) {
+          setShowMore(false);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div className="table-auto overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500">
       {currentUser.isAdmin && userPosts.length > 0 ? (
@@ -85,6 +103,14 @@ function DashBoardPost() {
               ))}
             </Table.Body>
           </Table>
+          {showMore && (
+            <button
+              className="w-full py-7 text-sm text-teal-400 "
+              onClick={handleShowMore}
+            >
+              show More
+            </button>
+          )}
         </>
       ) : (
         <p>You have no posts yet!</p>
