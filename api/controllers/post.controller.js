@@ -66,3 +66,13 @@ export const getPosts = wrapAsync(async (req, res, next) => {
 
   res.status(200).json({ posts, totalPosts, lastMonthPosts });
 });
+
+export const deletePost = wrapAsync(async (req, res, next) => {
+  if (!req.user.isAdmin && req.params.userId !== req.user.userId) {
+    return next(
+      new ExpressError(403, "You are not allowed to delete this post")
+    );
+  }
+  await Post.findByIdAndDelete(req.params.postId);
+  res.status(200).json("Post has been deleted");
+});

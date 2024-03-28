@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Table } from "flowbite-react";
+import { Button, Modal, Table } from "flowbite-react";
 import { Link } from "react-router-dom";
+import { IoWarningOutline } from "react-icons/io5";
 
 function DashBoardPost() {
   const [userPosts, setUserPosts] = useState([]);
   const [showMore, setShowMore] = useState(true);
+  const [showModal, setshowModal] = useState(false);
+  const [postIdToDeleted, setPostIdToDeleted] = useState("");
   const { currentUser } = useSelector((store) => store.user);
   useEffect(() => {
     const fetchUserPosts = async () => {
@@ -47,6 +50,26 @@ function DashBoardPost() {
       console.log(error);
     }
   };
+
+  const handleDeletePost = async () => {
+    setshowModal(false);
+    try {
+      const response = await fetch(
+        `/api/post/deletepost/${postIdToDeleted}/${currentUser._id}`,
+        { method: "DELETE" }
+      );
+      const data = await response.json();
+      if (!response.ok) {
+        console.log(data.message);
+      } else {
+        setUserPosts((prevPost) => {
+          return prevPost.filter((post) => post._id !== postIdToDeleted);
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div className="table-auto overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500">
       {currentUser.isAdmin && userPosts.length > 0 ? (
@@ -64,7 +87,10 @@ function DashBoardPost() {
             </Table.Head>
             <Table.Body className="divide-y">
               {userPosts.map((post) => (
-                <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                <Table.Row
+                  key={post._id}
+                  className="bg-white dark:border-gray-700 dark:bg-gray-800"
+                >
                   <Table.Cell>
                     {new Date(post.updatedAt).toLocaleDateString("en-IN")}
                   </Table.Cell>
@@ -87,7 +113,13 @@ function DashBoardPost() {
                   </Table.Cell>
                   <Table.Cell>{post.category}</Table.Cell>
                   <Table.Cell>
-                    <span className="text-red-500 font-medium hover:underline cursor-pointer">
+                    <span
+                      onClick={() => {
+                        setshowModal(true);
+                        setPostIdToDeleted(post._id);
+                      }}
+                      className="text-red-500 font-medium hover:underline cursor-pointer"
+                    >
                       Delete
                     </span>
                   </Table.Cell>
@@ -111,6 +143,30 @@ function DashBoardPost() {
               show More
             </button>
           )}
+          <Modal
+            show={showModal}
+            onClose={() => setshowModal(false)}
+            popup
+            size="md"
+          >
+            <Modal.Header />
+            <Modal.Body>
+              <div>
+                <IoWarningOutline className="h-14 w-14 text-gray-400 mx-auto mb-5 dark:text-gray-200" />
+                <h3 className="text-center text-gray-500 dark:text-gray-400 mb-5">
+                  Are you sure you want to delete this post
+                </h3>
+                <div className="flex justify-center gap-5">
+                  <Button color="failure" onClick={handleDeletePost}>
+                    Yes I'm sure
+                  </Button>
+                  <Button color="gray" onClick={() => setshowModal(false)}>
+                    No cancel
+                  </Button>
+                </div>
+              </div>
+            </Modal.Body>
+          </Modal>
         </>
       ) : (
         <p>You have no posts yet!</p>
