@@ -54,7 +54,7 @@ export const updateUser = wrapAsync(async (req, res, next) => {
 });
 
 export const deleteUser = wrapAsync(async (req, res, next) => {
-  if (req.user.userId !== req.params.id) {
+  if (!req.user.isAdmin && req.user.userId !== req.params.id) {
     return next(
       new ExpressError(403, "you are not allowed to delete this user ")
     );

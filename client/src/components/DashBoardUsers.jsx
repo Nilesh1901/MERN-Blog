@@ -55,7 +55,24 @@ function DashBoardUsers() {
     }
   };
 
-  const handleDeleteUser = async () => {};
+  const handleDeleteUser = async () => {
+    setshowModal(false);
+    try {
+      const response = await fetch(`/api/user/delete/${userIdToDeleted}`, {
+        method: "DELETE",
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setUsers((prevUsers) =>
+          prevUsers.filter((user) => user._id !== userIdToDeleted)
+        );
+      } else {
+        console.log(data.message);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
   return (
     <div className="table-auto overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500">
       {currentUser.isAdmin && users.length > 0 ? (
