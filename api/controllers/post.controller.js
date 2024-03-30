@@ -76,3 +76,22 @@ export const deletePost = wrapAsync(async (req, res, next) => {
   await Post.findByIdAndDelete(req.params.postId);
   res.status(200).json("Post has been deleted");
 });
+
+export const updatePost = wrapAsync(async (req, res, next) => {
+  if (!req.user.isAdmin && req.user.userId !== req.params.userId) {
+    return next(new ExpressError(403, "You are not allowed to Edit this post"));
+  }
+  const updatedPost = await Post.findByIdAndUpdate(
+    req.params.postId,
+    {
+      $set: {
+        title: req.body.title,
+        category: req.body.category,
+        image: req.body.image,
+        content: req.body.content,
+      },
+    },
+    { new: true }
+  );
+  res.status(200).json(updatedPost);
+});
