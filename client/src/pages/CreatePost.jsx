@@ -83,7 +83,7 @@ function CreatePost() {
     }
   };
   return (
-    <div className="flex p-3 min-w-3xl min-h-screen mx-auto flex-col">
+    <div className="  p-3 max-w-5xl min-h-screen mx-auto">
       <h1 className="text-center text-3xl my-7 font-semibold">Create Post</h1>
       <form action="" className="flex flex-col gap-4" onSubmit={handleSubmit}>
         <div className="flex flex-col sm:flex-row gap-4 justify-between">

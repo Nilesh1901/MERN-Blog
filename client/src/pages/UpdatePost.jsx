@@ -1,12 +1,6 @@
 import { useCallback } from "react";
 import { useState, useEffect } from "react";
-import {
-  Alert,
-  Button,
-  FileInput,
-  Select,
-  TextInput,
-} from "flowbite-react";
+import { Alert, Button, FileInput, Select, TextInput } from "flowbite-react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import {
@@ -118,7 +112,7 @@ function UpdatePost() {
     }
   };
   return (
-    <div className=" p-3 max-w-3xl min-h-screen mx-auto">
+    <div className=" p-3 max-w-5xl min-h-screen mx-auto">
       <h1 className="text-center text-3xl my-7 font-semibold">Update Post</h1>
       <form action="" className="flex flex-col gap-4" onSubmit={handleSubmit}>
         <div className="flex flex-col sm:flex-row gap-4 justify-between">

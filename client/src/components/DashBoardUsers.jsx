@@ -99,7 +99,7 @@ function DashBoardUsers() {
                     <img
                       src={user.profilePicture}
                       alt={user.username}
-                      className="w-12 rounded-full h-12 object-cover bg-gray-500"
+                      className="w-10 rounded-full h-10 object-cover bg-gray-500"
                     />
                   </Table.Cell>
                   <Table.Cell className=" font-medium text-gray-900 dark:text-white">
