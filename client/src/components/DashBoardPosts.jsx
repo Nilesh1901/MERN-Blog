@@ -20,7 +20,12 @@ function DashBoardPost() {
           throw new Error("Failed to fetch user posts");
         }
         const data = await response.json();
-        setUserPosts(data.posts);
+        if (response.ok) {
+          setUserPosts(data.posts);
+          if (data.posts.length < 9) {
+            setShowMore(false);
+          }
+        }
       } catch (error) {
         console.error("Error fetching user posts:", error);
       }
