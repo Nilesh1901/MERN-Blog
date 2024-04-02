@@ -61,3 +61,17 @@ export const editComment = wrapAsync(async (req, res, next) => {
   await editedComment.save();
   res.status(200).json(editedComment);
 });
+
+export const deleteComment = wrapAsync(async (req, res, next) => {
+  const comment = await Comment.findById(req.params.commentId);
+  if (!comment) {
+    return next(new ExpressError(404, "Comment not found"));
+  }
+  if (comment.userId !== req.user.userId && !req.user.isAdmin) {
+    return next(
+      new ExpressError(403, "You are not allowed to deleted this comment")
+    );
+  }
+  await Comment.findByIdAndDelete(req.params.commentId);
+  res.status(200).json("Comment has been deleted");
+});

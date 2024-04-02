@@ -90,6 +90,11 @@ function CommentSection({ postId }) {
       )
     );
   };
+  const handleDelete = (commentId) => {
+    setPostComments(
+      postComments.filter((comment) => comment._id !== commentId)
+    );
+  };
   return (
     <div className="max-w-2xl mx-auto w-full p-3 border-t border-slate-500">
       {currentUser ? (
@@ -154,6 +159,7 @@ function CommentSection({ postId }) {
               comment={postComment}
               onLike={handleLike}
               onEdit={handleEdit}
+              onDelete={handleDelete}
             />
           ))}
         </>

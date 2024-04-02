@@ -2,13 +2,17 @@ import React, { useEffect, useState } from "react";
 import moment from "moment";
 import { FaThumbsUp } from "react-icons/fa";
 import { useSelector } from "react-redux";
-import { Button, Textarea } from "flowbite-react";
+import { Button, Modal, Textarea } from "flowbite-react";
+import { IoWarningOutline } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
 
-function Comments({ comment, onLike, onEdit }) {
+function Comments({ comment, onLike, onEdit, onDelete }) {
   const { currentUser } = useSelector((store) => store.user);
   const [user, setUser] = useState({});
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(comment.content);
+  const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate();
   useEffect(() => {
     const getUser = async () => {
       try {
@@ -33,6 +37,10 @@ function Comments({ comment, onLike, onEdit }) {
 
   const handleSave = async () => {
     try {
+      if (!currentUser) {
+        navigate("/sign-in");
+        return;
+      }
       const response = await fetch(`/api/comment/editComment/${comment._id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -50,6 +58,26 @@ function Comments({ comment, onLike, onEdit }) {
     }
   };
 
+  const handleDelete = async () => {
+    setShowModal(false);
+    if (!currentUser) {
+      navigate("/sign-in");
+      return;
+    }
+    try {
+      const response = await fetch(`/api/comment/delete/${comment._id}`, {
+        method: "DELETE",
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        console.log(data.message);
+      } else {
+        onDelete(comment._id);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
   return (
     <div className="flex p-4 border-b dark:border-gray-600 text-sm">
       <div className="mr-3 flex-shrink-0">
@@ -119,17 +147,51 @@ function Comments({ comment, onLike, onEdit }) {
               </p>
               {currentUser &&
                 (comment.userId === currentUser._id || currentUser.isAdmin) && (
-                  <button
-                    onClick={handleEdit}
-                    className="text-gray-400 hover:text-blue-500"
-                  >
-                    Edit
-                  </button>
+                  <>
+                    <button
+                      onClick={handleEdit}
+                      className="text-gray-400 hover:text-blue-500"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => setShowModal(true)}
+                      className="text-gray-400 hover:text-red-500"
+                    >
+                      Delete
+                    </button>
+                  </>
                 )}
             </div>
           </>
         )}
       </div>
+      {showModal && (
+        <Modal
+          show={showModal}
+          onClose={() => setShowModal(false)}
+          popup
+          size="md"
+        >
+          <Modal.Header />
+          <Modal.Body>
+            <div>
+              <IoWarningOutline className="h-14 w-14 text-gray-400 mx-auto mb-5 dark:text-gray-200" />
+              <h3 className="text-center text-gray-500 dark:text-gray-400 mb-5">
+                Are you sure you want to delete this comment
+              </h3>
+              <div className="flex justify-center gap-5">
+                <Button color="failure" onClick={handleDelete}>
+                  Yes I'm sure
+                </Button>
+                <Button color="gray" onClick={() => setShowModal(false)}>
+                  No cancel
+                </Button>
+              </div>
+            </div>
+          </Modal.Body>
+        </Modal>
+      )}
     </div>
   );
 }
