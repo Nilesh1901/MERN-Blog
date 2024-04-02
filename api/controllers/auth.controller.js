@@ -55,16 +55,18 @@ export const signIn = wrapAsync(async (req, res, next) => {
     return next(new ExpressError(400, "Invalid Password"));
   }
 
-  // assign token to the browser session
+  // assign token to the browser session with expiry in 7 days
   const token = jwt.sign(
     { userId: validUser._id, isAdmin: validUser.isAdmin },
-    process.env.JWT_SECRET
+    process.env.JWT_SECRET,
+    { expiresIn: "7d" } // Expires in 7 days
   );
   const { password: pass, ...rest } = validUser._doc;
   res
     .status(200)
     .cookie("access_token", token, {
       httpOnly: true,
+      expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // Expires in 7 days
     })
     .json(rest);
 });
