@@ -81,12 +81,16 @@ export const google = wrapAsync(async (req, res, next) => {
     // assign token to the browser session
     const token = jwt.sign(
       { userId: user._id, isAdmin: user.isAdmin },
-      process.env.JWT_SECRET
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
     );
     const { password, ...rest } = user._doc;
     res
       .status(200)
-      .cookie("access_token", token, { httpOnly: true })
+      .cookie("access_token", token, {
+        httpOnly: true,
+        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      })
       .json(rest);
   } else {
     // generating a random password
@@ -110,12 +114,16 @@ export const google = wrapAsync(async (req, res, next) => {
     // assign token to the browser session
     const token = jwt.sign(
       { userId: newUser._id, isAdmin: newUser.isAdmin },
-      process.env.JWT_SECRET
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
     );
     const { password, ...rest } = newUser._doc;
     res
       .status(200)
-      .cookie("access_token", token, { httpOnly: true })
+      .cookie("access_token", token, {
+        httpOnly: true,
+        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      })
       .json(rest);
   }
 });
