@@ -40,3 +40,24 @@ export const likeComment = wrapAsync(async (req, res, next) => {
   await comment.save();
   res.status(200).json(comment);
 });
+
+export const editComment = wrapAsync(async (req, res, next) => {
+  const comment = await Comment.findById(req.params.commentId);
+  if (!comment) {
+    return next(new ExpressError(404, "comment dose not found"));
+  }
+  if (req.user.userId !== comment.userId && !req.user.isAdmin) {
+    return next(
+      new ExpressError(403, "You are not allowed to edit this comment")
+    );
+  }
+  const editedComment = await Comment.findByIdAndUpdate(
+    req.params.commentId,
+    {
+      content: req.body.content,
+    },
+    { new: true }
+  );
+  await editedComment.save();
+  res.status(200).json(editedComment);
+});
