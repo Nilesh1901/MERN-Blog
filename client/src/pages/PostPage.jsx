@@ -10,20 +10,23 @@ function PostPage() {
   const [post, setPost] = useState(null);
 
   useEffect(() => {
-    setLoading(true);
     const fetchPost = async () => {
       try {
-        const response = await fetch(`/api/post/getposts?slug=${slug}`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch post");
+        setLoading(true);
+        const res = await fetch(`/api/post/getposts?slug=${slug}`);
+        const data = await res.json();
+        if (!res.ok) {
+          setError(true);
+          setLoading(false);
+          return;
         }
-        const data = await response.json();
-        setPost(data.posts[0]);
-        setError(false);
+        if (res.ok) {
+          setPost(data.posts[0]);
+          setLoading(false);
+          setError(false);
+        }
       } catch (error) {
-        console.log(error.message);
         setError(true);
-      } finally {
         setLoading(false);
       }
     };

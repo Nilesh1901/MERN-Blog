@@ -101,3 +101,12 @@ export const getUsers = wrapAsync(async (req, res, next) => {
     lastMonthUsers,
   });
 });
+
+export const getUser = wrapAsync(async (req, res, next) => {
+  const user = await User.findById(req.params.userId);
+  if (!user) {
+    return next(new ExpressError(404, "user not found"));
+  }
+  const { password, ...rest } = user._doc;
+  res.status(200).json(rest);
+});

@@ -11,8 +11,8 @@ const commentSchema = new Schema(
       required: true,
     },
     userId: {
-      type: String,
-      required: true,
+      type: Schema.Types.ObjectId,
+      ref: "User",
     },
     likes: {
       type: Array,
