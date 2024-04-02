@@ -1,7 +1,7 @@
 import { Alert, Button, Textarea } from "flowbite-react";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Comments from "./Comments";
 
 function CommentSection({ postId }) {
@@ -9,6 +9,7 @@ function CommentSection({ postId }) {
   const [comment, setComment] = useState("");
   const [commentError, setCommentError] = useState(null);
   const [postComments, setPostComments] = useState([]);
+  const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
     setCommentError(null);
@@ -50,6 +51,36 @@ function CommentSection({ postId }) {
     };
     getComments();
   }, [postId]);
+
+  const handleLike = async (commentId) => {
+    try {
+      if (!currentUser) {
+        navigate("/sing-in");
+        return;
+      }
+      const response = await fetch(`/api/comment/likeComment/${commentId}`, {
+        method: "PUT",
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setPostComments(
+          postComments.map((comment) =>
+            comment._id === commentId
+              ? {
+                  ...comment,
+                  likes: data.likes,
+                  numberOfLikes: data.likes.length,
+                }
+              : comment
+          )
+        );
+      } else {
+        throw new Error();
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
   return (
     <div className="max-w-2xl mx-auto w-full p-3 border-t border-slate-500">
       {currentUser ? (
@@ -109,7 +140,11 @@ function CommentSection({ postId }) {
             </div>
           </div>
           {postComments.map((postComment) => (
-            <Comments key={postComment._id} comment={postComment} />
+            <Comments
+              key={postComment._id}
+              comment={postComment}
+              onLike={handleLike}
+            />
           ))}
         </>
       )}
