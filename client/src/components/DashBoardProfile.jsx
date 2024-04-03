@@ -169,7 +169,7 @@ function DashBoardProfile() {
   };
   return (
     <div className=" max-w-lg mx-auto p-3 w-full">
-      <h2 className=" text-center font-semibold text-3xl py-7">Profile</h2>
+      <h2 className="font-[Syne] text-center font-semibold text-3xl py-7">Profile</h2>
       <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
         <input
           type="file"

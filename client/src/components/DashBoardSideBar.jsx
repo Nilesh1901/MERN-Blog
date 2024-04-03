@@ -6,6 +6,7 @@ import {
   HiDocumentText,
   HiUserGroup,
   HiAnnotation,
+  HiChartPie,
 } from "react-icons/hi";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, Link } from "react-router-dom";
@@ -45,6 +46,17 @@ function DashBoardSideBar() {
     <Sidebar className="w-full md:w-56">
       <Sidebar.Items>
         <Sidebar.ItemGroup className="flex flex-col gap-1">
+          {currentUser.isAdmin && (
+            <Link to={"/dashboard?tab=dashboard"}>
+              <Sidebar.Item
+                active={tab === "dashboard" || !tab}
+                icon={HiChartPie}
+                as={"div"}
+              >
+                DashBoard
+              </Sidebar.Item>
+            </Link>
+          )}
           <Link to={"/dashboard?tab=profile"}>
             <Sidebar.Item
               active={tab === "profile"}
@@ -67,6 +79,7 @@ function DashBoardSideBar() {
               </Sidebar.Item>
             </Link>
           )}
+
           {currentUser.isAdmin && (
             <Link to={"/dashboard?tab=users"}>
               <Sidebar.Item

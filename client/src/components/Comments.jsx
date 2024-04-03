@@ -134,7 +134,7 @@ function Comments({ comment, onLike, onEdit, onDelete }) {
                 className={`text-gray-400 hover:text-blue-500 ${
                   currentUser &&
                   comment.likes.includes(currentUser._id) &&
-                  "text-blue-400"
+                  "!text-blue-400"
                 }`}
               >
                 <FaThumbsUp />

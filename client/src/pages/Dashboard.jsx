@@ -5,6 +5,7 @@ import DashBoardProfile from "../components/DashBoardProfile";
 import DashBoardPost from "../components/DashBoardPosts";
 import DashBoardUsers from "../components/DashBoardUsers";
 import DashBoardComments from "../components/DashBoardComments";
+import DashBoardComp from "../components/DashBoardComp";
 
 function Dashboard() {
   const [tab, setTab] = useState("");
@@ -37,6 +38,9 @@ function Dashboard() {
 
       {/* comments */}
       {tab === "comments" && <DashBoardComments />}
+
+      {/* Dashboard */}
+      {tab === "dashboard" && <DashBoardComp />}
     </div>
   );
 }

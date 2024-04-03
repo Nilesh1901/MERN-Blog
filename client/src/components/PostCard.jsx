@@ -10,7 +10,7 @@ function PostCard({ post }) {
           className="w-full h-[260px] object-cover group-hover:h-[200px] transition-all duration-200 z-20"
         />
       </Link>
-      <div className="p-3 flex flex-col gap-2">
+      <div className="p-3 font-[Syne] flex flex-col gap-2">
         <p className="text-lg font-semibold line-clamp-2">{post.title}</p>
         <span className="italic text-sm">{post.category} </span>
         <Link

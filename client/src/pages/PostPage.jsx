@@ -62,7 +62,7 @@ function PostPage() {
 
   return (
     <main className=" flex flex-col p-3 max-w-6xl mx-auto min-h-screen font-[Noto Sans]">
-      <h1 className="text-3xl dark:text-zinc-200 mt-10 p-3 text-center max-w-2xl mx-auto lg:text-4xl font-bold">
+      <h1 className="text-3xl dark:text-zinc-200 mt-10 p-3 text-center max-w-2xl mx-auto lg:text-4xl font-bold font-[Syne]">
         {post && post.title}
       </h1>
       <Link
@@ -92,7 +92,7 @@ function PostPage() {
       ></div>
       <CommentSection postId={post && post._id} />
       <div className="flex flex-col justify-center items-center mb-5">
-        <h1 className="mt-5 text-2xl dark:text-zinc-200  font-semibold">
+        <h1 className="mt-5 text-2xl font-[Syne] dark:text-zinc-200  font-semibold">
           Recent articles
         </h1>
         <div className="flex flex-wrap justify-center gap-5 mt-5">
