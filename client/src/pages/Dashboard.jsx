@@ -4,6 +4,7 @@ import DashBoardSideBar from "../components/DashBoardSideBar";
 import DashBoardProfile from "../components/DashBoardProfile";
 import DashBoardPost from "../components/DashBoardPosts";
 import DashBoardUsers from "../components/DashBoardUsers";
+import DashBoardComments from "../components/DashBoardComments";
 
 function Dashboard() {
   const [tab, setTab] = useState("");
@@ -33,6 +34,9 @@ function Dashboard() {
 
       {/* users */}
       {tab === "users" && <DashBoardUsers />}
+
+      {/* comments */}
+      {tab === "comments" && <DashBoardComments />}
     </div>
   );
 }

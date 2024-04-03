@@ -62,7 +62,7 @@ function PostPage() {
 
   return (
     <main className=" flex flex-col p-3 max-w-6xl mx-auto min-h-screen font-[Noto Sans]">
-      <h1 className="text-3xl mt-10 p-3 text-center max-w-2xl mx-auto lg:text-4xl font-bold">
+      <h1 className="text-3xl dark:text-zinc-200 mt-10 p-3 text-center max-w-2xl mx-auto lg:text-4xl font-bold">
         {post && post.title}
       </h1>
       <Link
