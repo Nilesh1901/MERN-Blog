@@ -131,6 +131,7 @@ function CommentSection({ postId }) {
             rows="4"
             onChange={(e) => setComment(e.target.value)}
             value={comment}
+            required
           />
           <div className="flex justify-between items-center mt-5">
             <p className="text-xs text-gray-400">
@@ -140,7 +141,11 @@ function CommentSection({ postId }) {
               Submit
             </Button>
           </div>
-          {commentError && <Alert color="failure">{commentError}</Alert>}
+          {commentError && (
+            <Alert className="mt-2" color="failure">
+              {commentError}
+            </Alert>
+          )}
         </form>
       )}
       {postComments.length === 0 ? (
