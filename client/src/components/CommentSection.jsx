@@ -10,6 +10,7 @@ function CommentSection({ postId }) {
   const [commentError, setCommentError] = useState(null);
   const [postComments, setPostComments] = useState([]);
   const navigate = useNavigate();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setCommentError(null);
@@ -40,10 +41,14 @@ function CommentSection({ postId }) {
   useEffect(() => {
     const getComments = async () => {
       try {
-        const response = await fetch(`/api/comment/getPostComments/${postId}`);
-        if (response.ok) {
-          const data = await response.json();
-          setPostComments(data);
+        if (postId) {
+          const response = await fetch(
+            `/api/comment/getPostComments/${postId}`
+          );
+          if (response.ok) {
+            const data = await response.json();
+            setPostComments(data);
+          }
         }
       } catch (error) {
         console.log(error.message);
