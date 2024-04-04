@@ -208,7 +208,7 @@ function DashBoardComp() {
                 comments.map((comment) => {
                   // Find the post corresponding to the comment
                   const correspondingPost = posts.find(
-                    (post) => post._id === comment.postId
+                    (post) => post._id === comment.postId._id
                   );
                   // Get the title of the corresponding post
                   const postTitle = correspondingPost
