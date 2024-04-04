@@ -58,9 +58,12 @@ function DashBoardComments() {
   const handleDeleteComment = async () => {
     setshowModal(false);
     try {
-      const response = await fetch(`/api/comment/delete/${commentIdToDeleted}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `/api/comment/delete/${commentIdToDeleted}`,
+        {
+          method: "DELETE",
+        }
+      );
       const data = await response.json();
       if (response.ok) {
         setcomments((prevComments) =>
@@ -99,10 +102,10 @@ function DashBoardComments() {
                     {comment.content}
                   </Table.Cell>
                   <Table.Cell>{comment.numberOfLikes}</Table.Cell>
-                  <Table.Cell>{comment.postId}</Table.Cell>
-                  <Table.Cell>
-                   {comment.userId}
+                  <Table.Cell className="w-96">
+                    <p className="line-clamp-2">{comment.postId.title}</p>
                   </Table.Cell>
+                  <Table.Cell>{comment.userId.username}</Table.Cell>
                   <Table.Cell>
                     <span
                       onClick={() => {

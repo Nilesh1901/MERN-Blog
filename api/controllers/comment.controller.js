@@ -87,6 +87,12 @@ export const getComment = wrapAsync(async (req, res, next) => {
   const limit = parseInt(req.query.limit) || 9;
   const sortDirection = req.query.sort === "asc" ? 1 : -1;
   const comments = await Comment.find()
+    .populate({
+      path: "postId",
+    })
+    .populate({
+      path: "userId",
+    })
     .sort({ createdAt: sortDirection })
     .skip(startIndex)
     .limit(limit);
