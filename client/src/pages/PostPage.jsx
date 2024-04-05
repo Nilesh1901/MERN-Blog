@@ -42,7 +42,7 @@ function PostPage() {
     if (post) {
       const getUser = async () => {
         try {
-          const response = await fetch(`/api/user/${post.userId}`);
+          const response = await fetch(`/api/user/${post.userId._id}`);
           const data = await response.json();
           if (response.ok) {
             setUser(data);

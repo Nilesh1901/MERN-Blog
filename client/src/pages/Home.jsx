@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 function Home() {
   return (
     <div className="flex w-screen h-screen">
-      <div id="hero-image" className=" md:w-screen w-0 h-0 md:h-[100%]">
-        <div className="flex sm:justify-end items-center lg:pr-20 lg:pt-20 sm:py-10 sm:px-10 justify-center px-5 py-5">
-          <div className="hero-text-section text-left sm:ml-8 flex flex-col gap-4 lg:max-w-2xl max-w-96">
+      <div id="hero-image" className=" sm:w-screen w-0 h-0 sm:h-[100%]">
+        <div className="flex sm:justify-end items-center lg:pr-20 sm:pt-20 sm:pr-15 justify-center px-5 py-5">
+          <div className="hero-text-section text-left sm:ml-8 flex flex-col gap-4 lg:max-w-2xl max-w-[500px]">
             <h1 className="font-bold font-[syne] text-3xl sm:text-5xl lg:text-6xl leading-tight text-zinc-800 dark:text-white">
               Welcome to my Blog
             </h1>
@@ -37,7 +37,10 @@ function Home() {
                 embark on a journey of discovery unlike any other.
               </p>
             </div>
-            <Link to={'/search'} className="text-teal-400 font-bold font-[syne] text-lg hover:underline mb-4">
+            <Link
+              to={"/search"}
+              className="text-teal-400 font-bold font-[syne] text-lg hover:underline mb-4"
+            >
               View all Blogs
             </Link>
           </div>

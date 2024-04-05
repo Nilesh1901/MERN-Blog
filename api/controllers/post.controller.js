@@ -47,6 +47,7 @@ export const getPosts = wrapAsync(async (req, res, next) => {
       ],
     }),
   })
+    .populate("userId")
     .sort({ updatedAt: sortDirection })
     .skip(startIndex)
     .limit(limit);

@@ -3,7 +3,7 @@ import PostCreater from "./PostCreater";
 
 function PostCard({ post, user, createdAt }) {
   return (
-    <div className="group relative w-full border-teal-500 hover:border-2 border h-[400px] overflow-hidden rounded-lg sm:w-[430px]">
+    <div className="group relative w-[450px] border-teal-500 hover:border-2 border h-[410px] overflow-hidden rounded-lg sm:w-[420px]">
       <Link to={`/post/${post.slug}`}>
         <img
           src={post.image}
@@ -13,7 +13,7 @@ function PostCard({ post, user, createdAt }) {
       </Link>
       <div className="p-3 font-[Syne] flex flex-col gap-2">
         <p className="text-lg font-semibold line-clamp-2">{post.title}</p>
-        <div className="flex justify-between">
+        <div className="flex justify-between sm:items-center flex-col sm:flex-row gap-3">
           <span className="italic text-sm">{post.category} </span>
           <span>
             <PostCreater user={user} createdAt={createdAt} />
