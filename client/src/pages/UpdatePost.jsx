@@ -138,9 +138,14 @@ function UpdatePost() {
             value={formData.category}
           >
             <option value="uncategorized">Select a category</option>
-            <option value="javascript">Javascript</option>
-            <option value="reactjs">React.js</option>
-            <option value="nextjs">Next.js</option>
+            <option value="food">Food</option>
+            <option value="travel">Travel</option>
+            <option value="horror">Horror</option>
+            <option value="technology">Technology</option>
+            <option value="music">Music</option>
+            <option value="fashion">Fashion</option>
+            <option value="movie">Movie</option>
+            <option value="health">Health</option>
           </Select>
         </div>
         <div className="flex gap-4 justify-between border-dotted border-teal-500 border-4 p-3">
