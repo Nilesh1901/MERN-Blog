@@ -84,7 +84,7 @@ function PostPage() {
 
   return (
     <main className=" flex flex-col p-3 max-w-6xl mx-auto min-h-screen font-[Noto Sans]">
-      <h1 className="text-2xl dark:text-zinc-200 mt-10 p-3 text-center max-w-2xl mx-auto md:text-4xl font-bold font-[Syne]">
+      <h1 className="text-2xl dark:text-zinc-100 text-zinc-800 mt-10 p-3 text-center max-w-2xl mx-auto md:text-4xl font-bold font-[Syne]">
         {post && post.title}
       </h1>
       <Link
@@ -115,7 +115,7 @@ function PostPage() {
         <h1 className="mt-5 text-2xl font-[Syne] dark:text-zinc-200  font-semibold">
           Recent articles
         </h1>
-        <div className="flex flex-wrap p-3 justify-center gap-5 mt-5">
+        <div className="flex flex-wrap p-3 justify-center gap-5 mt-5 w-full">
           {recentPost &&
             recentPost.map((post) => (
               <PostCard
