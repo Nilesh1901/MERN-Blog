@@ -208,7 +208,11 @@ function UpdatePost() {
             ],
           }}
         />
-        <Button type="submit" gradientDuoTone="purpleToPink">
+        <Button
+          type="submit"
+          disabled={imageUploadProgress}
+          gradientDuoTone="purpleToPink"
+        >
           Update Post
         </Button>
       </form>

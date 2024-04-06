@@ -19,7 +19,6 @@ function CreatePost() {
   const [imageUploadError, setImageUploadError] = useState(false);
   const [formData, setFormData] = useState({});
   const [publishError, setPublishError] = useState(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
   const handleUploadImage = async () => {
@@ -32,7 +31,7 @@ function CreatePost() {
       const fileName = new Date().getTime() + file.name;
       const storageRef = ref(storage, fileName);
       const uploadTask = uploadBytesResumable(storageRef, file);
-      setIsSubmitting(true);
+
       uploadTask.on(
         "state_changed",
         (snapShot) => {
@@ -45,7 +44,6 @@ function CreatePost() {
             "Could not upload image (File must be less than 2MB)"
           );
           setImageUploadProgress(null);
-          setIsSubmitting(false);
         },
         () => {
           getDownloadURL(uploadTask.snapshot.ref)
@@ -55,11 +53,9 @@ function CreatePost() {
               });
               setImageUploadError(null);
               setImageUploadProgress(null);
-              setIsSubmitting(false);
             })
             .catch((error) => {
               setImageUploadError(error);
-              setIsSubmitting(false);
             });
         }
       );
@@ -71,7 +67,6 @@ function CreatePost() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true); // Disable the submit button
     try {
       const response = await fetch("/api/post/create", {
         headers: { "Content-Type": "application/json" },
@@ -81,7 +76,7 @@ function CreatePost() {
       const data = await response.json();
       if (!response.ok) {
         setPublishError(data.message);
-        setIsSubmitting(false); // Enable the submit button
+
         return;
       } else {
         setPublishError(null);
@@ -89,7 +84,6 @@ function CreatePost() {
       }
     } catch (error) {
       setPublishError("Something went wrong");
-      setIsSubmitting(false); // Enable the submit button
     }
   };
 
@@ -97,33 +91,102 @@ function CreatePost() {
     <div className="  p-3 max-w-5xl min-h-screen mx-auto">
       <h1 className="text-center text-3xl my-7 font-semibold">Create Post</h1>
       <form action="" className="flex flex-col gap-4" onSubmit={handleSubmit}>
-        {/* Form fields */}
-        <Button
-          type="button"
-          gradientDuoTone="purpleToBlue"
-          outline
-          disabled={imageUploadProgress || isSubmitting} // Disable if image is uploading or form is submitting
-          onClick={handleUploadImage}
-          size="sm"
-        >
-          {imageUploadProgress ? (
-            <div className="w-16 h-16">
-              <CircularProgressbar
-                value={imageUploadProgress}
-                text={`${imageUploadProgress || 0}%`}
-              />
-            </div>
-          ) : (
-            "Upload Image"
-          )}
-        </Button>
-        {/* Other form fields */}
+        <div className="flex flex-col sm:flex-row gap-4 justify-between">
+          <TextInput
+            type="text"
+            placeholder="Title"
+            required
+            id="title"
+            className="flex-1"
+            onChange={(e) =>
+              setFormData((prevFormData) => {
+                return { ...prevFormData, title: e.target.value };
+              })
+            }
+          />
+          <Select
+            onChange={(e) =>
+              setFormData((prevFormData) => {
+                return { ...prevFormData, category: e.target.value };
+              })
+            }
+          >
+            <option value="uncategorized">Select a category</option>
+            <option value="food">Food</option>
+            <option value="travel">Travel</option>
+            <option value="horror">Horror</option>
+            <option value="technology">Technology</option>
+            <option value="music">Music</option>
+            <option value="fashion">Fashion</option>
+            <option value="movie">Movie</option>
+            <option value="health">Health</option>
+          </Select>
+        </div>
+        <div className="flex gap-4 justify-between border-dotted border-teal-500 border-4 p-3">
+          <FileInput
+            type="file"
+            accept="image/*"
+            onChange={(e) => setFile(e.target.files[0])}
+          />
+          <Button
+            gradientDuoTone="purpleToBlue"
+            outline
+            disabled={imageUploadProgress}
+            onClick={handleUploadImage}
+            size="sm"
+          >
+            {imageUploadProgress ? (
+              <div className="w-16 h-16">
+                <CircularProgressbar
+                  value={imageUploadProgress}
+                  text={`${imageUploadProgress || 0}%`}
+                />
+              </div>
+            ) : (
+              "Upload Image"
+            )}
+          </Button>
+        </div>
+        {imageUploadError && <Alert color="failure">{imageUploadError}</Alert>}
+        {formData.image && (
+          <img
+            src={formData.image}
+            alt="upload"
+            className="w-full h-72 object-cover"
+          />
+        )}
+        <ReactQuill
+          theme="snow"
+          placeholder="Write something..."
+          className="h-72 mb-12"
+          onChange={(value) =>
+            setFormData((prevFormData) => {
+              return { ...prevFormData, content: value };
+            })
+          }
+          modules={{
+            toolbar: [
+              [{ header: "1" }, { header: "2" }, { font: [] }],
+              [{ size: [] }],
+              ["bold", "italic", "underline", "strike", "blockquote"],
+              [
+                { list: "ordered" },
+                { list: "bullet" },
+                { indent: "-1" },
+                { indent: "+1" },
+              ],
+              ["link", "image", "video"],
+              ["clean"],
+              ["code-block"], // Include the code-block option in the toolbar
+            ],
+          }}
+        />
         <Button
           type="submit"
+          disabled={imageUploadProgress}
           gradientDuoTone="purpleToPink"
-          disabled={imageUploadProgress || isSubmitting} // Disable if image is uploading or form is submitting
         >
-          {isSubmitting ? "Submitting..." : "Publish"}
+          Publish
         </Button>
       </form>
       {publishError && (
