@@ -13,6 +13,7 @@ function Comments({ comment, onLike, onEdit, onDelete }) {
   const [editedContent, setEditedContent] = useState(comment.content);
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
+  console.log(user);
   useEffect(() => {
     const getUser = async () => {
       try {
@@ -28,7 +29,7 @@ function Comments({ comment, onLike, onEdit, onDelete }) {
       }
     };
     getUser();
-  }, []); 
+  }, []);
   // added second useeffect
   useEffect(() => {
     const getUser = async () => {
@@ -163,8 +164,7 @@ function Comments({ comment, onLike, onEdit, onDelete }) {
                     (comment.numberOfLikes === 1 ? "Like" : "Likes")}
               </p>
               {currentUser && // make the changes here also
-                (comment.userId._id === currentUser._id ||
-                  currentUser.isAdmin) && (
+                (user._id === currentUser._id || currentUser.isAdmin) && (
                   <>
                     <button
                       onClick={handleEdit}
