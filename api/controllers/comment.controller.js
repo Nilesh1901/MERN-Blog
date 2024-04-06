@@ -21,7 +21,7 @@ export const createComment = wrapAsync(async (req, res, next) => {
 export const getPostComments = wrapAsync(async (req, res, next) => {
   const comments = await Comment.find({ postId: req.params.postId }).sort({
     createdAt: -1,
-  });
+  }).populate('userId').populate('postId');
   res.status(200).json(comments);
 });
 

@@ -3,7 +3,6 @@ import { useSelector } from "react-redux";
 import { Button, Modal, Spinner, Table } from "flowbite-react";
 import { IoWarningOutline } from "react-icons/io5";
 
-
 function DashBoardComments() {
   const [comments, setcomments] = useState([]);
   const [showMore, setShowMore] = useState(true);
@@ -105,21 +104,21 @@ function DashBoardComments() {
                   className="bg-white dark:border-gray-700 dark:bg-gray-800"
                 >
                   <Table.Cell>
-                    {new Date(comment.updatedAt).toLocaleDateString("en-IN")}
+                    {new Date(comment?.updatedAt).toLocaleDateString("en-IN")}
                   </Table.Cell>
                   <Table.Cell className=" font-medium text-gray-900 dark:text-white">
-                    {comment.content}
+                    {comment?.content}
                   </Table.Cell>
-                  <Table.Cell>{comment.numberOfLikes}</Table.Cell>
+                  <Table.Cell>{comment?.numberOfLikes}</Table.Cell>
                   <Table.Cell className="w-96">
-                    <p className="line-clamp-2">{comment.postId.title}</p>
+                    <p className="line-clamp-2">{comment?.postId?.title}</p>
                   </Table.Cell>
-                  <Table.Cell>{comment.userId.username}</Table.Cell>
+                  <Table.Cell>{comment?.userId?.username}</Table.Cell>
                   <Table.Cell>
                     <span
                       onClick={() => {
                         setshowModal(true);
-                        setCommentIdToDeleted(comment._id);
+                        setCommentIdToDeleted(comment?._id);
                       }}
                       className="text-red-500 font-medium hover:underline cursor-pointer"
                     >

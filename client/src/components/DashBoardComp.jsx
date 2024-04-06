@@ -6,7 +6,7 @@ import {
   HiDocumentText,
   HiOutlineUserGroup,
 } from "react-icons/hi";
-import { Button, Table } from "flowbite-react";
+import { Button, Spinner, Table } from "flowbite-react";
 import { Link } from "react-router-dom";
 
 function DashBoardComp() {
@@ -20,8 +20,10 @@ function DashBoardComp() {
   const [lastMonthPosts, setLastMonthPosts] = useState(0);
   const [lastMonthComments, setLastMonthComments] = useState(0);
   const { currentUser } = useSelector((store) => store.user);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    setLoading(true);
     const fetchUsers = async () => {
       try {
         const response = await fetch("/api/user/getusers?limit=5");
@@ -30,14 +32,18 @@ function DashBoardComp() {
           setUsers(data.users);
           setTotalUsers(data.totalUsers);
           setLastMonthUsers(data.lastMonthUsers);
+          setLoading(false);
         } else {
+          setLoading(false);
           throw new Error(data.message);
         }
       } catch (error) {
+        setLoading(false);
         console.log(error.message);
       }
     };
     const fetchPosts = async () => {
+      setLoading(true);
       try {
         const response = await fetch("/api/post/getposts?limit=5");
         const data = await response.json();
@@ -45,25 +51,32 @@ function DashBoardComp() {
           setPosts(data.posts);
           setTotalPosts(data.totalPosts);
           setLastMonthPosts(data.lastMonthPosts);
+          setLoading(false);
         } else {
+          setLoading(false);
           throw new Error(data.message);
         }
       } catch (error) {
+        setLoading(false);
         console.log(error.message);
       }
     };
     const fetchComments = async () => {
+      setLoading(true);
       try {
         const response = await fetch("/api/comment/getcomments?limit=5");
         const data = await response.json();
         if (response.ok) {
+          setLoading(false);
           setComments(data.comments);
           setTotalComments(data.totalComments);
           setLastMonthComments(data.lastMonthComments);
         } else {
+          setLoading(false);
           throw new Error(data.message);
         }
       } catch (error) {
+        setLoading(false);
         console.log(error.message);
       }
     };
@@ -77,6 +90,11 @@ function DashBoardComp() {
   return (
     // container
     <div className="p-3 md:mx-auto">
+      {loading && (
+        <div className="flex justify-center items-center mx-auto min-h-screen w-full">
+          <Spinner size="xl" />
+        </div>
+      )}
       {/* total users, posts, comments */}
       <div className="flex flex-wrap gap-4 justify-center">
         {/* total users */}
