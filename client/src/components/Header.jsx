@@ -75,14 +75,11 @@ function Header() {
           type="text"
           placeholder="Search..."
           rightIcon={AiOutlineSearch}
-          className="hidden lg:inline"
+          className="w-32 sm:w-auto"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </form>
-      <Button className="lg:hidden w-12 h-10" color="gray" pill>
-        <AiOutlineSearch />
-      </Button>
       <div className="flex gap-2 md:order-2">
         <Button
           className="sm:inline hidden w-12 h-10 mr-2"
@@ -129,8 +126,8 @@ function Header() {
         <Navbar.Link active={path === "/about"} as={"div"}>
           <Link to={"/about"}>About</Link>
         </Navbar.Link>
-        <Navbar.Link active={path === "/projects"} as={"div"}>
-          <Link to={"/projects"}>Projects</Link>
+        <Navbar.Link active={path === "/search"} as={"div"}>
+          <Link to={"/search"}>View Blogs</Link>
         </Navbar.Link>
       </Navbar.Collapse>
     </Navbar>

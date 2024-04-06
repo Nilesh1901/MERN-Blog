@@ -95,7 +95,7 @@ function DashBoardComp() {
           <div className="flex items-center gap-2  text-green-500">
             <span className="flex items-center text-sm gap-1">
               {lastMonthUsers}
-              <HiArrowNarrowUp />
+              {lastMonthUsers > 0 && <HiArrowNarrowUp />}
             </span>
             <div className="text-gray-400">Last months</div>
           </div>
@@ -119,7 +119,7 @@ function DashBoardComp() {
           <div className="flex items-center gap-2  text-green-500">
             <span className="flex items-center text-sm gap-1">
               {lastMonthComments}
-              <HiArrowNarrowUp />
+              {lastMonthComments > 0 && <HiArrowNarrowUp />}
             </span>
             <div className="text-gray-400">Last months</div>
           </div>
@@ -141,7 +141,7 @@ function DashBoardComp() {
           <div className="flex items-center gap-2  text-green-500">
             <span className="flex items-center text-sm gap-1">
               {lastMonthPosts}
-              <HiArrowNarrowUp />
+              {lastMonthPosts > 0 && <HiArrowNarrowUp />}
             </span>
             <div className="text-gray-400">Last months</div>
           </div>
