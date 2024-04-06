@@ -28,6 +28,23 @@ function Comments({ comment, onLike, onEdit, onDelete }) {
       }
     };
     getUser();
+  }, []); 
+  // added second useeffect
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        const response = await fetch(`/api/user/${comment.userId._id}`);
+        const data = await response.json();
+        if (response.ok) {
+          setUser(data);
+        } else {
+          console.log(data.message);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getUser();
   }, [comment]);
 
   const handleEdit = () => {
@@ -145,8 +162,9 @@ function Comments({ comment, onLike, onEdit, onDelete }) {
                     " " +
                     (comment.numberOfLikes === 1 ? "Like" : "Likes")}
               </p>
-              {currentUser &&
-                (comment.userId === currentUser._id || currentUser.isAdmin) && (
+              {currentUser && // make the changes here also
+                (comment.userId._id === currentUser._id ||
+                  currentUser.isAdmin) && (
                   <>
                     <button
                       onClick={handleEdit}
