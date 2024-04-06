@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Button, Modal, Table } from "flowbite-react";
+import { Button, Modal, Spinner, Table } from "flowbite-react";
 import { IoWarningOutline } from "react-icons/io5";
 import { FaCheck } from "react-icons/fa6";
 import { TiCancel } from "react-icons/ti";
@@ -8,24 +8,29 @@ import { TiCancel } from "react-icons/ti";
 function DashBoardUsers() {
   const [users, setUsers] = useState([]);
   const [showMore, setShowMore] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [showModal, setshowModal] = useState(false);
   const [userIdToDeleted, setUserIdToDeleted] = useState("");
   const { currentUser } = useSelector((store) => store.user);
   useEffect(() => {
+    setLoading(true);
     const fetchUsers = async () => {
       try {
         const response = await fetch(`/api/user/getusers`);
         if (!response.ok) {
+          setLoading(false);
           throw new Error("Failed to fetch user users");
         }
         const data = await response.json();
         if (response.ok) {
+          setLoading(false);
           setUsers(data.users);
           if (data.users.length < 9) {
             setShowMore(false);
           }
         }
       } catch (error) {
+        setLoading(false);
         console.error("Error fetching user users:", error);
       }
     };
@@ -75,6 +80,11 @@ function DashBoardUsers() {
   };
   return (
     <div className="table-auto overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500">
+      {loading && (
+        <div className="flex justify-center items-center mx-auto min-h-screen w-full">
+          <Spinner size="xl" />
+        </div>
+      )}
       {currentUser.isAdmin && users.length > 0 ? (
         <>
           <Table hoverable className=" shadow-md">

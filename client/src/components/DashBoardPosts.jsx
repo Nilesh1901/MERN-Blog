@@ -1,33 +1,38 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Button, Modal, Table } from "flowbite-react";
+import { Button, Modal, Spinner, Table } from "flowbite-react";
 import { Link } from "react-router-dom";
 import { IoWarningOutline } from "react-icons/io5";
 
 function DashBoardPost() {
   const [userPosts, setUserPosts] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [showMore, setShowMore] = useState(true);
   const [showModal, setshowModal] = useState(false);
   const [postIdToDeleted, setPostIdToDeleted] = useState("");
   const { currentUser } = useSelector((store) => store.user);
   useEffect(() => {
+    setLoading(true);
     const fetchUserPosts = async () => {
       try {
         const response = await fetch(
           `/api/post/getposts?userId=${currentUser?._id}`
         );
         if (!response.ok) {
+          setLoading(false);
           throw new Error("Failed to fetch user posts");
         }
         const data = await response.json();
         if (response.ok) {
           setUserPosts(data.posts);
+          setLoading(false);
           if (data.posts.length < 9) {
             setShowMore(false);
           }
         }
       } catch (error) {
         console.error("Error fetching user posts:", error);
+        setLoading(false);
       }
     };
 
@@ -77,6 +82,11 @@ function DashBoardPost() {
   };
   return (
     <div className="table-auto overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500">
+      {loading && (
+        <div className="flex justify-center items-center mx-auto min-h-screen w-full">
+          <Spinner size="xl" />
+        </div>
+      )}
       {currentUser.isAdmin && userPosts.length > 0 ? (
         <>
           <Table hoverable className=" shadow-md">
