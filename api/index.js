@@ -6,6 +6,7 @@ import authRoute from "./routes/auth.route.js";
 import postRoute from "./routes/post.route.js";
 import cookieParser from "cookie-parser";
 import commentRoute from "./routes/comment.route.js";
+import path from "path";
 
 dotenv.config();
 
@@ -13,6 +14,8 @@ mongoose
   .connect(process.env.MONGODBCONNECTION)
   .then(() => console.log("MongoDB Connected..."))
   .catch((err) => console.error(err));
+
+const __dirname = path.resolve();
 
 const app = express();
 
@@ -23,6 +26,12 @@ app.use("/api/user", userRoute);
 app.use("/api/auth", authRoute);
 app.use("/api/post", postRoute);
 app.use("/api/comment", commentRoute);
+
+app.use(express.static(path.join(__dirname, "/client/dist")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
+});
 
 // middleware to handle error
 app.use((err, req, res, next) => {
