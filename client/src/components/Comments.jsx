@@ -13,7 +13,7 @@ function Comments({ comment, onLike, onEdit, onDelete }) {
   const [editedContent, setEditedContent] = useState(comment.content);
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
-  console.log(user);
+  
   useEffect(() => {
     const getUser = async () => {
       try {
